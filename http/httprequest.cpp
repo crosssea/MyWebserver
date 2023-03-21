@@ -102,10 +102,10 @@ void HttpRequest::ParseBody_ (const std::string &line) {
     state_ = FINISH;
 }
 
-int HttpRequest::convertHex (char ch) {
+int HttpRequest::ConvertHex (char ch) {
     if(ch >= 'A' && ch <= 'F') return ch - 'A' + 10;
     if(ch >= 'a' && ch <= 'f') return ch - 'a' + 10;
-    return ch;
+    return ch - '0';
 }
 
 void HttpRequest::ParsePost_ () {
@@ -130,8 +130,74 @@ void HttpRequest::ParseFromUrlencoded_ () {
     std::string key,value;
     int num = 0;
     int n = body_.size();
-    for (int i = 0, j = 0; i < n; i++) {
-
+    int i = 0, j = 0;
+    for (; i < n; i++) {
+        char ch = body_[i];
+        switch (ch)
+        {
+        case '=':
+            key = body_.substr(j, i - j);
+            j = i + 1;
+            break;
+        case '+':
+            body_[i] = ' ';
+            break;
+        case '%':
+            num = ConvertHex(body_[i + 1]) * 16 + ConvertHex(body_[i + 2]);
+            body_[i+2] = num % 10 + '0';
+            body_[i+1] = num / 10 + '0';
+            i += 2;
+            break;
+        case '&':
+            value = body_.substr(j, i - j);
+            j = i + 1;
+            post_[key] = value;
+            break;
+        default:
+            break;
+        }
     }
-    
+    assert(j <= i);
+    if (post_.count(key) == 0 && j < i) {
+        value = body_.substr(j, i - j);
+        post_[key] = value;
+    }
+}
+/*
+TODO(添加数据库连接池，检测用户是否登陆等等)
+*/
+bool HttpRequest::UserVerify (const std::string &name, const std::string &pwd, bool isLogin) {
+    return true;
+}
+
+std::string HttpRequest::path() const{
+    return path_;
+}
+
+std::string& HttpRequest::path() {
+    return path_;
+}
+
+std::string HttpRequest::method() const {
+    return method_;
+}
+
+std::string HttpRequest::version() const {
+    return version_;
+}
+
+std::string HttpRequest::GetPost(const std::string &key) const {
+    assert(key != "");
+    if (post_.count(key)){
+        return post_.find(key)->second; // 无法消除const
+    }
+    return "";
+}
+
+std::string HttpRequest::GetPost(const char *key) const {
+    assert(key != nullptr);
+    if (post_.count(key)){
+        return post_.find(key)->second; // 无法消除const
+    }
+    return "";
 }

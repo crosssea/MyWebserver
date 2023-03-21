@@ -35,10 +35,10 @@ public:
 
     void Init();
     bool parse(Buffer &buffer);
-    std::string path()const {};
+    std::string path()const;
     std::string& path();
     std::string method() const;
-    std::string& method();
+    std::string version() const;
     std::string GetPost(const std::string & key) const;
     std::string GetPost(const char *key) const;
 
@@ -63,7 +63,7 @@ private:
 
     static const std::unordered_set<std::string> DEFAULT_HTML;
     static const std::unordered_map<std::string, int> DEFAULT_HTML_TAG;
-    static int convertHex(char ch);
+    static int ConvertHex(char ch);
 
 };
 
