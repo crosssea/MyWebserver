@@ -7,7 +7,8 @@
 #include<regex>
 #include<errno.h>
 
-class Buffer;
+#include "../buffer/buffer.h"
+
 
 class HttpRequest{
 public:

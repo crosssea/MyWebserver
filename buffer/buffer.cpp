@@ -105,3 +105,33 @@ ssize_t Buffer::ReadFd(int fd, int *Errno) {
     return len;
 }
 
+ssize_t Buffer::WriteFd(int fd, int *Errno) {
+    size_t readSize = ReadableBytes();
+    size_t len = write(fd, Peek(), readSize);
+    if (len < 0) {
+        *Errno = errno;
+        return len;
+    }
+    readPos_ += len;
+    return len;
+}
+
+char* Buffer::BeginPtr_ () {
+    return buffer_.data();
+}
+
+const char* Buffer::BeginPtr_ () const{
+    return buffer_.data();
+}
+
+void Buffer::MakeSpace_ (size_t len) {
+    if (WritableBytes() + PrependableBytes() < len) {
+        buffer_.resize(writePos_ + len + 1); // 可以考虑更改一下扩容规则
+    } else {
+        size_t readable = ReadableBytes();
+        std::copy(BeginPtr_() + readPos_, BeginWrite(), BeginPtr_()); // 不可以一个带const一个不带
+        readPos_ = 0;
+        writePos_ = readable;
+        assert(readable == ReadableBytes());
+    }
+}
