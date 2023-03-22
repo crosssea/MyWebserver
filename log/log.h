@@ -17,7 +17,7 @@
 class Log {
 public:
     void init(int level, const char *path = "./log",
-                char *suffix = ".ll_log",
+                const char *suffix = ".ll_log",
                 int maxQueueCapacity = 1024);
     static Log* Instance(); //单例模式
     static void FlushLogThread();
@@ -46,7 +46,7 @@ private:
     int toDay_;
     bool isOpen_;
 
-    Buffer buffer_;
+    Buffer buff_;
     int level_;
     bool isAsync_;
 
