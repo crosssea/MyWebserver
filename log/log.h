@@ -31,8 +31,9 @@ public:
 
 private:
     Log();
+    void AppendLogLevelTitle_(int level);
     virtual ~Log(); //虚函数， 存在子类？
-    void AsyncWrite();
+    void AsyncWrite_();
 private:
     static const int LOG_PATH_LEN = 256;
     static const int LOG_NAME_LEN = 256;
