@@ -167,7 +167,61 @@ void HttpRequest::ParseFromUrlencoded_ () {
 TODO(添加数据库连接池，检测用户是否登陆等等)
 */
 bool HttpRequest::UserVerify (const std::string &name, const std::string &pwd, bool isLogin) {
-    return true;
+    if (name == "" || pwd == "") { return false;}
+    LOG_INFO("Verifying name:%s pwd:%s", name.c_str(), pwd.c_str());
+    MYSQL *sql = nullptr;
+    SqlConnRAII(&sql, SqlConnPool::Instance()); // TODO("第二个参数是否会出错当场被释放")
+    assert(sql);
+
+    bool flag = false;
+    unsigned int j = 0;
+    char order[256] = {0};
+
+    MYSQL_FIELD *fields = nullptr;
+    MYSQL_RES *res = nullptr;
+
+    if (!isLogin) {flag = true;}
+    snprintf(order, 256, "SELECT username, password FROM user WHERE username='%s' LIMIT 1", name.c_str());
+
+    LOG_DEBUG("Executing quering : %s", order);
+    if (mysql_query(sql, order)) {
+        LOG_ERROR("Quering failed!");
+        return false;
+    }
+
+    res = mysql_store_result(sql);
+    j = mysql_num_fields(res);
+    fields = mysql_fetch_field(res);
+
+    while(MYSQL_ROW row = mysql_fetch_row(res)) {
+        LOG_DEBUG("MYSQL_ROW: %s %s", row[0], row[1]);
+        std::string password(row[1]);
+        if (isLogin) {
+            if (pwd == password) { flag = true;}
+            else {
+                flag = false;
+                LOG_DEBUG("Invalid password!");
+            }
+        } else {
+            flag = false;
+            LOG_DEBUG("User %s is Already exist!");
+        }
+    }
+    mysql_free_result(res);
+
+    if (!isLogin && flag) {
+        LOG_DEBUG("regirsting!");
+        bzero(order, 256);
+        snprintf(order, 256, "INSERT INTO user(username, passord) VALUES('%s',  '%s')", name.c_str(), pwd.c_str());
+        LOG_DEBUG("%s", order);
+        if (mysql_query(sql, order)) {
+            LOG_DEBUG("Insert Failed!");
+            flag = false;
+        }
+    }
+    SqlConnPool::Instance()->FreeConn(sql);
+    LOG_DEBUG("UserVerify results is %d", flag);
+    return flag;
 }
 
 std::string HttpRequest::path() const{
