@@ -129,6 +129,7 @@ void Log::write(int level, const char *format, ...) {
             deque_->push_back(buff_.RetrieveAllToStr());
         } else {
             fputs(buff_.Peek(), fp_);
+            // std::cout<<buff_.RetrieveAllToStr()<<std::endl;
         }
         buff_.RetrieveAll();
     }
