@@ -17,7 +17,8 @@ void HttpRequest::Init() {
 }
 
 bool HttpRequest::IsKeepAlive() const {
-    if (header_.count("connection") == 1) {
+    LOG_DEBUG("Connection is [%s], version_ is [%s]", header_.find("Connection")->second.c_str(), version_.c_str());
+    if (header_.count("Connection")) {
         return header_.find("Connection")->second == "keep-alive" && version_ == "1.1";
     }
     return false;
@@ -31,6 +32,8 @@ bool HttpRequest::parse(Buffer &buff) {
     while (buff.ReadableBytes() && state_ != FINISH) {
         const char *lineEnd = std::search(buff.Peek(), buff.BeginWriteConst(), CRLF, CRLF + 2); //需要时类型匹配的
         std::string line(buff.Peek(), lineEnd);
+        // std::cout<<line<<std::endl;
+        // LOG_INFO("Parsing line: %s, state is header ? [%d]", line.data(), state_==HEADERS);
         switch (state_)
         {
         case REQUEST_LINE:
@@ -56,6 +59,7 @@ bool HttpRequest::parse(Buffer &buff) {
         }
         buff.RetrieveUntil(lineEnd + 2);
     }
+    LOG_INFO("Parsing done, request path is : %s", path_.data());
     return true;
 }
 
@@ -87,10 +91,11 @@ bool HttpRequest::ParseRequestLine_ (const std::string &line) {
 */
 
 void HttpRequest::ParseHeader_ (const std::string &line) {
-    std::regex pattern("^(^:)*: ?(.*)$");
+    std::regex pattern("^([^:]*): ?(.*)$");
     std::smatch subMatch;
     if(std::regex_match(line, subMatch, pattern)) {
-        header_[subMatch[1]] = header_[subMatch[2]];
+        header_[subMatch[1]] = subMatch[2];
+        LOG_DEBUG("[%s] is [%s]",std::string(subMatch[1]).c_str(), std::string(subMatch[2]).c_str() );
     } else {
         state_ = BODY;
     }

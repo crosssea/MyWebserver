@@ -21,6 +21,8 @@ using MS = std::chrono::milliseconds;
 using TimeStamp = Clock::time_point;
 
 struct TimerNode{
+    TimerNode() = default;
+    TimerNode(int id_, const TimeStamp &expires_, const TimeOutCallBack &cb_):id(id_), expires(expires_), cb(cb_){ };
     int id;
     TimeStamp expires;
     TimeOutCallBack cb;

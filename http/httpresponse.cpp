@@ -34,7 +34,7 @@ const std::unordered_map<int, std::string> HttpResponse::CODE_STATUS = {
 const std::unordered_map<int, std::string> HttpResponse::CODE_PATH = {
     {400, "/400.html"},
     {403, "/403.html"},
-    {404, "404.html"},
+    {404, "/404.html"},
 };
 
 HttpResponse::HttpResponse() {
@@ -56,14 +56,17 @@ void HttpResponse::Init(const std::string &srcDir, const std::string &path, bool
     code_ = code;
     path_ = path;
     srcDir_ = srcDir;
+    isKeepAlive_ = isKeepAlive;
     mmFile_ = nullptr;
     mmFileStat_ = {0};
+    LOG_INFO("Response file is: %s",(srcDir_ + path_).data());
 }
 
 void HttpResponse::MakeResponse(Buffer &buff) {
-    // TODO("查看这个stat函数的意义，以及返回值的具体含义")
     if (stat((srcDir_ + path_).data(), &mmFileStat_) < 0 || S_ISDIR(mmFileStat_.st_mode)) {
+        // std::cout<<404<<std::endl;
         code_ = 404; // 找不到要的文件，或者是一个路径
+        LOG_WARN("File not found: %s", (srcDir_ + path_).data())
     }
     else if (!(mmFileStat_.st_mode & S_IROTH)) {
         code_ = 403; //没有权限
@@ -71,6 +74,7 @@ void HttpResponse::MakeResponse(Buffer &buff) {
         code_ = 200; //成功
     }
     ErrorHtml_();
+    LOG_DEBUG("After Error Handling file is [%s]",(srcDir_ + path_).data());
     AddStateLine_(buff);
     AddHeader_(buff);
     AddContent_(buff);
@@ -86,7 +90,7 @@ size_t HttpResponse::FileLen() const {
 
 void HttpResponse::ErrorHtml_ () {
     if (CODE_PATH.count(code_)) {
-        path_ = CODE_STATUS.find(code_)->second; // []会报错
+        path_ = CODE_PATH.find(code_)->second; // []会报错
         stat((srcDir_ + path_).data(), &mmFileStat_);
     }
 }
@@ -119,11 +123,12 @@ void HttpResponse::AddContent_ (Buffer &buff) {
     int *mmRet = (int*)mmap(0, mmFileStat_.st_size, PROT_READ, MAP_PRIVATE, srcFd, 0);
     if (*mmRet == -1) {
         ErrorContent(buff, "File NotFound!");
+        std::cout<<"File not Found"<<std::endl;
         return;
     }
     mmFile_ = (char*)mmRet;
     close(srcFd);
-    buff.Append("Content-length: "+ std::to_string(mmFileStat_.st_size) + "\r\n");
+    buff.Append("Content-length: "+ std::to_string(mmFileStat_.st_size) + "\r\n\r\n");
 }
 
 void HttpResponse::UnmapFile () {

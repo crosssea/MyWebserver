@@ -1,0 +1,69 @@
+2023-03-26 20:50:45.001448 [info] : Client[18](211.64.159.157:54896) quit, UserCount:1
+2023-03-26 20:50:53.038752 [info] : Parsing done, request path is : /index.html
+2023-03-26 20:50:53.038870 [info] : Response file is: /root/c++intern/mywebserver/resources/index.html
+2023-03-26 20:50:53.038945 [info] : Beging to produce response for : 21
+2023-03-26 20:50:53.038972 [info] : User [21] keep Alive[1]
+2023-03-26 20:50:53.039008 [info] : Client[21] quit
+2023-03-26 20:50:53.039039 [info] : Client[21](211.64.159.157:54897) quit, UserCount:0
+2023-03-26 20:50:53.060266 [info] : Client[18(211.64.159.157:54933) in, userCount: 1
+2023-03-26 20:50:53.060334 [info] : Client[18] in !
+2023-03-26 20:51:05.552932 [info] : Parsing done, request path is : /index.html
+2023-03-26 20:51:05.553005 [info] : Response file is: /root/c++intern/mywebserver/resources/index.html
+2023-03-26 20:51:05.553046 [info] : Beging to produce response for : 18
+2023-03-26 20:51:05.553090 [info] : User [18] keep Alive[1]
+2023-03-26 20:51:05.553134 [info] : Client[18] quit
+2023-03-26 20:51:05.553166 [info] : Client[18](211.64.159.157:54933) quit, UserCount:0
+2023-03-26 20:51:05.573336 [info] : Client[18(211.64.159.157:54989) in, userCount: 1
+2023-03-26 20:51:05.573435 [info] : Client[18] in !
+2023-03-26 20:51:13.811442 [info] : Parsing done, request path is : /index.html
+2023-03-26 20:51:13.811518 [info] : Response file is: /root/c++intern/mywebserver/resources/index.html
+2023-03-26 20:51:13.811565 [info] : Beging to produce response for : 18
+2023-03-26 20:51:13.811610 [info] : User [18] keep Alive[1]
+2023-03-26 20:51:13.811635 [info] : Client[18] quit
+2023-03-26 20:51:13.811675 [info] : Client[18](211.64.159.157:54989) quit, UserCount:0
+2023-03-26 20:51:13.833569 [info] : Client[18(211.64.159.157:55022) in, userCount: 1
+2023-03-26 20:51:13.833629 [info] : Client[18] in !
+2023-03-26 20:51:45.109976 [info] : Parsing done, request path is : /index.html
+2023-03-26 20:51:45.110088 [info] : Response file is: /root/c++intern/mywebserver/resources/index.html
+2023-03-26 20:51:45.110153 [info] : Beging to produce response for : 18
+2023-03-26 20:51:45.110206 [info] : User [18] keep Alive[1]
+2023-03-26 20:51:45.110232 [info] : Client[18] quit
+2023-03-26 20:51:45.110269 [info] : Client[18](211.64.159.157:55022) quit, UserCount:0
+2023-03-26 20:51:45.131167 [info] : Client[18(211.64.159.157:55105) in, userCount: 1
+2023-03-26 20:51:45.131225 [info] : Client[18] in !
+2023-03-26 20:51:53.042534 [info] : Client[21] quit
+2023-03-26 20:52:29.504409 [info] : Parsing done, request path is : /index.html
+2023-03-26 20:52:29.504534 [info] : Response file is: /root/c++intern/mywebserver/resources/index.html
+2023-03-26 20:52:29.504613 [info] : Beging to produce response for : 18
+2023-03-26 20:52:29.504658 [info] : User [18] keep Alive[1]
+2023-03-26 20:52:29.504689 [info] : Client[18] quit
+2023-03-26 20:52:29.504725 [info] : Client[18](211.64.159.157:55105) quit, UserCount:0
+2023-03-26 20:52:29.526396 [info] : Client[18(211.64.159.157:55119) in, userCount: 1
+2023-03-26 20:52:29.526516 [info] : Client[18] in !
+2023-03-26 20:53:12.232998 [info] : Parsing done, request path is : /index.html
+2023-03-26 20:53:12.233080 [info] : Response file is: /root/c++intern/mywebserver/resources/index.html
+2023-03-26 20:53:12.233128 [info] : Beging to produce response for : 18
+2023-03-26 20:53:12.233176 [info] : User [18] keep Alive[1]
+2023-03-26 20:53:12.233199 [info] : Client[18] quit
+2023-03-26 20:53:12.233234 [info] : Client[18](211.64.159.157:55119) quit, UserCount:0
+2023-03-26 20:53:12.251292 [info] : Client[18(211.64.159.157:55305) in, userCount: 1
+2023-03-26 20:53:12.251345 [info] : Client[18] in !
+2023-03-26 20:53:45.131862 [info] : Parsing done, request path is : /index.html
+2023-03-26 20:53:45.131984 [info] : Response file is: /root/c++intern/mywebserver/resources/index.html
+2023-03-26 20:53:45.132057 [info] : Beging to produce response for : 18
+2023-03-26 20:53:45.132102 [info] : User [18] keep Alive[1]
+2023-03-26 20:53:45.132126 [info] : Client[18] quit
+2023-03-26 20:53:45.132167 [info] : Client[18](211.64.159.157:55305) quit, UserCount:0
+2023-03-26 20:53:45.150691 [info] : Client[18(211.64.159.157:55436) in, userCount: 1
+2023-03-26 20:53:45.150746 [info] : Client[18] in !
+2023-03-26 20:54:45.190571 [info] : Client[18] quit
+2023-03-26 20:54:45.190704 [info] : Client[18](211.64.159.157:55436) quit, UserCount:0
+2023-03-26 20:55:21.406795 [info] : Client[18(211.64.159.157:55829) in, userCount: 1
+2023-03-26 20:55:21.406907 [info] : Client[18] in !
+2023-03-26 20:55:21.408146 [info] : Client[21(211.64.159.157:55830) in, userCount: 2
+2023-03-26 20:55:21.408164 [info] : Client[21] in !
+2023-03-26 20:55:21.408551 [info] : Parsing done, request path is : /index.html
+2023-03-26 20:55:21.408584 [info] : Response file is: /root/c++intern/mywebserver/resources/index.html
+2023-03-26 20:55:21.408636 [info] : Beging to produce response for : 18
+2023-03-26 20:55:21.408657 [info] : User [18] keep Alive[1]
+2023-03-26 20:55:21.408680 [info] : Client[18] quit
