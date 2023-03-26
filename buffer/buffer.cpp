@@ -30,6 +30,8 @@ void Buffer::RetrieveUntil(const char* end) {
 
 void Buffer::RetrieveAll() {
     bzero(buffer_.data(), buffer_.size());
+    readPos_ = 0;
+    writePos_ = 0;
 }
 std::string Buffer::RetrieveAllToStr() {
     std::string res(Peek(), ReadableBytes());

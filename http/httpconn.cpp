@@ -104,7 +104,7 @@ bool HttpConn::process() {
     } else {
         response_.Init(srcDir, request_.path(), false, 400);
     }
-
+    LOG_DEBUG("Strting making response of file [%s]", (srcDir+request_.path()).c_str());
     response_.MakeResponse(writeBuff_);
 
     /* 响应头 */

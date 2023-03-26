@@ -107,6 +107,12 @@ size_t BlockQueue<T>::capacity() {
 }
 
 template<class T>
+bool BlockQueue<T>::full(){
+    std::lock_guard<std::mutex> locker(mtx_);
+    return deq_.size() >= capacity_;
+}
+
+template<class T>
 void BlockQueue<T>::push_back(const T &item) {
     std::unique_lock<std::mutex> locker(mtx_);
     while (deq_.size() >= capacity_)

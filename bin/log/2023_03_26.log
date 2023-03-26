@@ -1,0 +1,6 @@
+2023-03-26 14:54:04.351307 [info] : =======Server Initing ==========
+2023-03-26 14:54:04.351355 [info] : using Port: 1316, OpenLinger: False
+2023-03-26 14:54:04.351387 [info] : Listen mode: ET, OpenConn mode: ET
+2023-03-26 14:54:04.351461 [info] : LogSys level: 1
+2023-03-26 14:54:04.351655 [info] : srcDir: /root/c++intern/mywebserver/bin/resources/
+2023-03-26 14:54:04.351709 [info] : SqlCOnnPool num: 12, ThreadPool num: 6
