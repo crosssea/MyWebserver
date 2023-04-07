@@ -2,7 +2,7 @@
 
 const std::unordered_set<std::string> HttpRequest::DEFAULT_HTML{
     "/index", "/register", "/login",
-    "/welcome", "/videp", "/picture"
+    "/welcome", "/video", "/picture"
 };
 
 const std::unordered_map<std::string, int> HttpRequest::DEFAULT_HTML_TAG{
@@ -17,9 +17,12 @@ void HttpRequest::Init() {
 }
 
 bool HttpRequest::IsKeepAlive() const {
-    LOG_DEBUG("Connection is [%s], version_ is [%s]", header_.find("Connection")->second.c_str(), version_.c_str());
-    if (header_.count("Connection")) {
-        return header_.find("Connection")->second == "keep-alive" && version_ == "1.1";
+    // LOG_DEBUG("Connection is [%s], version_ is [%s]", header_.find("Connection")->second.c_str(), version_.c_str());
+    if (header_.count("Connection") || header_.count("Proxy-Connection")) {
+        if (header_.count("Connection"))
+            return header_.find("Connection")->second == "keep-alive" && version_ == "1.1";
+        else if (header_.count("Proxy-Connection"))
+            return header_.find("Proxy-Connection")->second == "keep-alive" && version_ == "1.1";
     }
     return false;
 }
@@ -60,6 +63,9 @@ bool HttpRequest::parse(Buffer &buff) {
         buff.RetrieveUntil(lineEnd + 2);
     }
     LOG_INFO("Parsing done, request path is : %s", path_.data());
+    // for (auto e:header_){
+    //     std::cout<<e.first<<" "<<e.second<<std::endl;
+    // }
     return true;
 }
 
@@ -95,7 +101,7 @@ void HttpRequest::ParseHeader_ (const std::string &line) {
     std::smatch subMatch;
     if(std::regex_match(line, subMatch, pattern)) {
         header_[subMatch[1]] = subMatch[2];
-        LOG_DEBUG("[%s] is [%s]",std::string(subMatch[1]).c_str(), std::string(subMatch[2]).c_str() );
+        // LOG_DEBUG("[%s] is [%s]",std::string(subMatch[1]).c_str(), std::string(subMatch[2]).c_str() );
     } else {
         state_ = BODY;
     }
@@ -114,8 +120,11 @@ int HttpRequest::ConvertHex (char ch) {
 }
 
 void HttpRequest::ParsePost_ () {
-    if (method_ == "POST" && header_["Content-Type"] == "application/x-www-from-urlencoded") {
+    LOG_WARN("parsing post,[%s], Type:[%s]",method_.data(),header_["Content-Type"].data());
+    if (method_ == "POST" && header_["Content-Type"] == "application/x-www-form-urlencoded") {
+         
         ParseFromUrlencoded_();
+        LOG_DEBUG("path:[%s]", path_.data());
         if (DEFAULT_HTML_TAG.count(path_)) {
             int tag = DEFAULT_HTML_TAG.find(path_)->second;
             if (tag == 0 || tag == 1) {
@@ -187,7 +196,6 @@ bool HttpRequest::UserVerify (const std::string &name, const std::string &pwd, b
 
     if (!isLogin) {flag = true;}
     snprintf(order, 256, "SELECT username, password FROM user WHERE username='%s' LIMIT 1", name.c_str());
-
     LOG_DEBUG("Executing quering : %s", order);
     if (mysql_query(sql, order)) {
         LOG_ERROR("Quering failed!");
@@ -205,11 +213,11 @@ bool HttpRequest::UserVerify (const std::string &name, const std::string &pwd, b
             if (pwd == password) { flag = true;}
             else {
                 flag = false;
-                LOG_DEBUG("Invalid password!");
+                LOG_INFO("Invalid password!");
             }
         } else {
             flag = false;
-            LOG_DEBUG("User %s is Already exist!");
+            LOG_INFO("User %s is Already exist!");
         }
     }
     mysql_free_result(res);
@@ -217,7 +225,7 @@ bool HttpRequest::UserVerify (const std::string &name, const std::string &pwd, b
     if (!isLogin && flag) {
         LOG_DEBUG("regirsting!");
         bzero(order, 256);
-        snprintf(order, 256, "INSERT INTO user(username, passord) VALUES('%s',  '%s')", name.c_str(), pwd.c_str());
+        snprintf(order, 256, "INSERT INTO user(username, password) VALUES('%s',  '%s')", name.c_str(), pwd.c_str());
         LOG_DEBUG("%s", order);
         if (mysql_query(sql, order)) {
             LOG_DEBUG("Insert Failed!");
@@ -225,7 +233,7 @@ bool HttpRequest::UserVerify (const std::string &name, const std::string &pwd, b
         }
     }
     SqlConnPool::Instance()->FreeConn(sql);
-    LOG_DEBUG("UserVerify results is %d", flag);
+    LOG_INFO("UserVerify results is %d", flag);
     return flag;
 }
 

@@ -12,9 +12,9 @@ WebServer::WebServer(int port, int trigMode, int timeoutMS,
 
 {
     srcDir_ = getcwd(nullptr, 256);
-    // std::cout<<srcDir_<<std::endl;
+    std::cout<<srcDir_<<std::endl;
     assert(srcDir_);
-    strncat(srcDir_, "/resources", 15);
+    strncat(srcDir_, "/../resources", 15);
     HttpConn::userCount = 0;
     HttpConn::srcDir = srcDir_;
     SqlConnPool::Instance()->Init("localhost", sqlPort, sqlUser, sqlPwd, dbName, connPoolNum);
@@ -96,7 +96,7 @@ void WebServer::Start() {
             }
             else if(events & EPOLLOUT) {
                 assert(users_.count(fd) > 0);
-                LOG_INFO("Beging to produce response for : %d", fd);
+                // LOG_INFO("Beging to produce response for : %d", fd);
                 DealWrite_(&users_[fd]);
             } else {
                 LOG_ERROR("Unexpected event");
@@ -190,7 +190,7 @@ void WebServer::OnWrite_ (HttpConn *client) {
     assert(client);
     int ret = -1;
     int writeErrno = 0;
-    LOG_INFO("User [%d] keep Alive[%d]", client->GetFd(), client->IsKeepAlive());
+    // LOG_INFO("User [%d] keep Alive[%d]", client->GetFd(), client->IsKeepAlive());
     ret = client->write(&writeErrno);
     if (client->ToWriteBytes() == 0) {
         if (client->IsKeepAlive()) {
@@ -263,7 +263,7 @@ bool WebServer::InitSocket_ () {
         return false;
     }
     SetFdNonblock(listenfd_);
-    LOG_INFO("Server port:%d", port_);
+    // LOG_INFO("Server port:%d", port_);
     return true;
 }
 

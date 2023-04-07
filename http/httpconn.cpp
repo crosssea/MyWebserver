@@ -65,31 +65,28 @@ ssize_t HttpConn::read(int *saveErrno) {
 }
 
 ssize_t HttpConn::write(int *saveErrno) {
-    ssize_t len = 0;
-    ssize_t templen = -1;
+    ssize_t len = -1;
     do {
-        templen = writev(fd_, iov_, iovCnt_);
-        if (len <= 0) {
+        len = writev(fd_, iov_, iovCnt_);
+        if(len <= 0) {
             *saveErrno = errno;
             break;
         }
-        len += templen;
-        if (iov_[0].iov_len + iov_[1].iov_len == 0) {
-                break; // 传输完成
-        } else if (static_cast<size_t> (templen) > iov_[0].iov_len) {
-            iov_[1].iov_base = (uint8_t*)iov_[1].iov_base + (templen - iov_[0].iov_len);
-            iov_[1].iov_len -= (templen - iov_[0].iov_len);
-            if (iov_[0].iov_len) {
+        if(iov_[0].iov_len + iov_[1].iov_len  == 0) { break; } /* 传输结束 */
+        else if(static_cast<size_t>(len) > iov_[0].iov_len) {
+            iov_[1].iov_base = (uint8_t*) iov_[1].iov_base + (len - iov_[0].iov_len);
+            iov_[1].iov_len -= (len - iov_[0].iov_len);
+            if(iov_[0].iov_len) {
                 writeBuff_.RetrieveAll();
                 iov_[0].iov_len = 0;
             }
-        } else {
-            iov_[0].iov_base = (uint8_t*)iov_[0].iov_base + templen; 
-            iov_[0].iov_len -= templen; 
-            writeBuff_.Retrieve(templen);
         }
-    }while(isET || ToWriteBytes() > 10240);
-
+        else {
+            iov_[0].iov_base = (uint8_t*)iov_[0].iov_base + len; 
+            iov_[0].iov_len -= len; 
+            writeBuff_.Retrieve(len);
+        }
+    } while(isET || ToWriteBytes() > 10240);
     return len;
 }
 
@@ -104,7 +101,7 @@ bool HttpConn::process() {
     } else {
         response_.Init(srcDir, request_.path(), false, 400);
     }
-    LOG_DEBUG("Strting making response of file [%s]", (srcDir+request_.path()).c_str());
+    // LOG_INFO("Starting making response of file [%s], using Keep alive = [%d]", (srcDir+request_.path()).c_str(), IsKeepAlive());
     response_.MakeResponse(writeBuff_);
 
     /* 响应头 */
@@ -118,7 +115,7 @@ bool HttpConn::process() {
         iov_[1].iov_len = response_.FileLen();
         iovCnt_ = 2;
     }
-    LOG_DEBUG("filesize:%d, %d  to %d", response_.FileLen() , iovCnt_, ToWriteBytes());
+    // LOG_INFO("filesize:%d, %d  to %d", response_.FileLen() , iovCnt_, ToWriteBytes());
     return true;
 }
 

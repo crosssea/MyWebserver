@@ -14,7 +14,7 @@ const std::unordered_map<std::string, std::string> HttpResponse::SUFFIX_TYPE = {
     {".jpg", "image/jpeg"},
     {".jpeg", "image/jpeg"},
     {".au", "audio/basic"},
-    {".mpeg", "video/,peg"},
+    {".mpeg", "video/peg"},
     {".mpg", "video/mpeg"},
     {".avi", "video/x-msvideo"},
     {".gz", "application/x-gzip"},
@@ -123,7 +123,7 @@ void HttpResponse::AddContent_ (Buffer &buff) {
     int *mmRet = (int*)mmap(0, mmFileStat_.st_size, PROT_READ, MAP_PRIVATE, srcFd, 0);
     if (*mmRet == -1) {
         ErrorContent(buff, "File NotFound!");
-        std::cout<<"File not Found"<<std::endl;
+        // std::cout<<"File not Found"<<std::endl;
         return;
     }
     mmFile_ = (char*)mmRet;
